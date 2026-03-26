@@ -1,24 +1,35 @@
+import os,json
+
 class SentanceDataPoint():
   def __init__(self):
     self.WordTypeFrequencyDict={} # a dict storing how many times the program 
     # has seen words in a position 
     self.WordTypeDict={} # a dict storing word types and frequencies due to position 
   def UpdateStructure(self,Value,WordPosition):
+    print("the structure is being updated")
     ## word position meaning the position of the word in the sentance
     ## Value meaning the word type value as defined by the ReadMe
+    print("The Word Position: {}".format(WordPosition))
+    print("The Word Dict {}".format(str(self.WordTypeDict)))
+    print(str(WordPosition not in self.WordTypeDict))
     if(WordPosition not in self.WordTypeDict):
       ## if no words have been seen in this position before 
       ## then add a new dict to record the position stuff here 
       NewDict={}
       NewDict[Value]=1
+      self.WordTypeDict[WordPosition]=NewDict
+      print(self.WordTypeDict[WordPosition].keys())
+      input()
+      print("this is the self.WordTypeDict")
+      print("Position :{}, Type:{}, Frequency:{}".format(WordPosition,str(self.WordTypeDict[WordPosition].keys()),self.WordTypeDict[WordPosition][Value]))
+      print(str(self.WordTypeDict))
+      input()
+      os.system("clear")
       ## primary key= position of the word in the sentence
       # secondary key = the type fo word it is 
       # data = the number of times this word has been seen here
-      self.WordTypeDict[WordPosition]=NewDict
     else:
-      print(Value)
-      print(self.WordTypeDict[WordPosition])
-      input()
+      print("the second Kind")
       if(Value not in self.WordTypeDict[WordPosition]):
         ## if a word type has never been seen in a certain position in
         ## a sentence before 
@@ -27,6 +38,9 @@ class SentanceDataPoint():
         ## if a word type has been seen again appearing at a certain position
         ## in a sentence 
         self.WordTypeDict[WordPosition][Value]+=1
+      print("Position :{}, Type:{}, Frequency{}".format(WordPosition,str(self.WordTypeDict[WordPosition]),self.WordTypeDict[WordPosition][Value]))
+      input()
+      os.system("clear")
     if(WordPosition not in self.WordTypeFrequencyDict):
       ### omg ive never seen a word in that position in a sentance before im gonna add it in 
       self.WordTypeFrequencyDict[WordPosition]=1
@@ -36,15 +50,21 @@ class SentanceDataPoint():
   def RelayData(self):
     ## a function that allows this class to tell the user teh data that it has 
     ## currently gathered on word types being in a position in a sentence
-    TypeToWordTranslator={0:"Noun",1:"Verb",2:"Adjective",3:"Adverb",4:"Pronoun",5:"Preposition",6:"Conjunction",7:"Article"}
+    TypeToWordTranslator={0:"Noun",1:"Verb",2:"Adjective",3:"Adverb",4:"Pronoun",5:"Preposition",6:"Conjunction",7:"Article",8:"Interjection"}
     for key in self.WordTypeFrequencyDict:
       #i.e. for every position you have seen a word appear in a sentence
       ## print the percentages of times different word types have appeared
       ## in each position
       for term in self.WordTypeDict[key]:
-        print("the word type {} has appeared at position {} in the sentence {} % of the time".format(TypeToWordTranslator[term],key,(100*self.WordTypeDict[key][term]/self.WordTypeFrequencyDict[key])))
+        print("the word type: {} has appeared at position: {} in the sentence: {} % of the time".format(TypeToWordTranslator[term],key,round((100*self.WordTypeDict[key][term]/self.WordTypeFrequencyDict[key]),2)))
+        print("\n")
+  def StoreSentenceInMemory(self):
+    f=open("Memory.txt","w")
+    f.write(str(self.WordTypeDict))
+    f.write("\n")
+    f.write(str(self.WordTypeFrequencyDict))
+    f.close()
 
-        
   
 
 class Punctuation():
