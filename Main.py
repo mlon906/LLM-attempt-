@@ -1,4 +1,4 @@
-import os,Classes
+import os,Classes,json
 from Classes import *
 
 
@@ -109,7 +109,7 @@ def CheckCapitalization(SearchTerm):
       SearchTerm.SetCapital(False)
 
 def DetermineWordType(TheWord,WordPosition):
-  ## the below function should return the top 3 word types
+  ## the below function should return the word types
   ## that the analyzed word is most likely to be 
   UpdateWordTypeValues(TheWord,WordPosition)
   MostCommonTypesList={}
@@ -142,7 +142,8 @@ def UserWordTypeOpinion(TheWord):
     4- Pronoun
     5- Prepesition 
     6- Conjunctions   
-    7- Article""")
+    7- Article
+    8- Interjection""")
     print(TheWord.WordName)
     UserOpinion=input()
     os.system("clear")
@@ -159,7 +160,7 @@ def UpdateWordTypeValues(TheWord,WordPosition):
   if(TestingMode=="By Hand"):
     UserWordTypeOpinion(TheWord)
   else:
-    WordToValueTranslator={"noun":0,"verb":1,"adjective":2,"adverb":3,"pronoun":4,"preposition":5,"conjunction":6,"article":7}
+    WordToValueTranslator={"noun":0,"verb":1,"adjective":2,"adverb":3,"pronoun":4,"preposition":5,"conjunction":6,"article":7,"interjection":8}
     WordFile=FindMatches(TheWord.WordName,ReadTrainingData()) ## finds the data from the file that matches the word
     # the user typed in 
     ## word file is the list of all the types of word that this word could be according to the database 
@@ -231,8 +232,23 @@ def GetData():
   for term in AllOfTheData:
     NewList.append(AllOfTheData[i].rstrip())
     i+=1
-  return(NewList)
+  f=open("Memories.txt","r")
+  NewData=f.readlines()
+  f.close()
+  ImportSentenceData(NewData)
 
+  # with open("Memory.pkl","rb") as file:
+  #   SentanceAnalyst.WordTypeDict=pickle.load("Memory.pkl")
+  #   SentanceAnalyst.WordTypeFrequencyDict=pickle.load("Memory.pkl")
+    
+  return(NewList)
+  
+def ImportSentenceData(data):
+  # This function will correctly import the data from a csv back into a 
+  # codeable class
+  SplitDicts=data.split("\n")[:len(SplitDicts)-1]
+  print(SplitDicts)
+  
 def AddWordToTrainingDataFile(Word):
   ## adds a given word to the training data 
   print(Word)
@@ -305,14 +321,23 @@ def FindMatches(SearchTerm,TrainingData):
 
 
 
-for i in range(10):
+for i in range(1):
   UserInput=input("Please input a sentance of some type of description")
   AnalyzeSentance(UserInput)
 
 SentanceAnalyst.RelayData()
-
+SentanceAnalyst.StoreSentenceInMemory()
 ## next stage is to store all of the Data in a new file This File will
 ## Store the sentences that the user inputs and the system analyzes
 ## for now ill use a csv to store the percentage of times a word type shows up in a dict
+
+## what im actually gonna do is implement a dictionary system to store word types and percentages
+## first number is position in sentence
+## second word = type of word 
+## third number = times it has been seen in this position
+
+
+
+
 
 
